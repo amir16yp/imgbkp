@@ -1,5 +1,5 @@
 # imgbkp
-A self hosted Imgur-like web application designed for a single user to share images and videos
+A self hosted Imgur-like web application designed for a single user to share images and videos.<br/>
 IMGBKP is a self-hosted web application that allows a single user to securely host their images and videos. While uploading is restricted to those with the password, anyone can view the images and videos once they are uploaded.
 
 Features
