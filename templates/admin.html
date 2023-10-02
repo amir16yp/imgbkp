@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMGBKP Admin Panel</title>
+    <link rel="stylesheet" href="{{ css_file }}">
+</head>
+<body>
+    <h1>IMGBKP Admin Panel</h1>
+    
+    <!-- File Upload Form -->
+    <form method="POST" action="/bkp/" enctype="multipart/form-data">
+        <h2>Upload a File</h2>
+        <input type="file" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <!-- File URL Upload Form -->
+    <form method="POST" action="/bkp/" enctype="multipart/form-data">
+        <h2>Upload a File via URL</h2>
+        <input type="url" name="url" placeholder="Enter URL" required>
+        <button type="submit">Upload</button>
+    </form>
+
+	<!-- Uploaded Files List -->
+	<h2>Uploaded Files:</h2>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>File Name</th>
+				<th>MIME Type</th>
+				<th>File Size</th>
+				<th>Download</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for file in files %}
+			<tr>
+				<td>{{ file.filename }}</td>
+				<td>{{ file.mime_type }}</td>
+				<td>{{ file.file_size_bytes | humanize_naturalsize }}</td>
+				<td><a href="/bkp/{{ file.filename.split('.')[0] }}">Download</a></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+</body>
+</html>
