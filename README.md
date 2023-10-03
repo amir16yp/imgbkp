@@ -70,7 +70,7 @@ Usage
 
 5.  **Viewing Files:**
 
-\- Anyone can view the uploaded images and videos by visiting the IMGBKP app's main page.  
+\- You can view a list of the uploaded images and videos if you are logged in
 \- Uploaded files are listed along with their metadata, and download links are provided.  
 \- Please note that only those you shared a file's link with can view it.
 
