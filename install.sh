@@ -16,17 +16,20 @@ host=${host:-0.0.0.0}
 read -p "Enter the port (default: 8833): " port
 port=${port:-8833}
 
+# Run as user (default: root)
+read -p "Enter the user to run as (default: root): " user
+user=${user:-root}
+
 # Generate systemd service file
 service_file="[Unit]
 Description=IMGBKP - Self-Hosted Image and Video Hosting App
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python $(pwd)/imgbkp.py --username $username --password $password --host $host --port $port
+ExecStart=/usr/bin/python3 $(pwd)/imgbkp.py --username $username --password $password --host $host --port $port
 WorkingDirectory=$(pwd)
 Restart=always
-User=your_username
-Group=your_groupname
+User=$user
 
 [Install]
 WantedBy=multi-user.target
