@@ -8,7 +8,7 @@ import time
 import argparse
 from waitress import serve
 import humanize
-
+from datetime import datetime 
 app = Flask(__name__)
 
 # Command-line arguments
@@ -127,6 +127,10 @@ def admin():
                     uploaded_files.append(metadata)
 
     return render_template('admin.html', files=uploaded_files)
+
+@app.template_filter('datetime')
+def format_datetime(timestamp):
+    return datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
 
 @app.route('/bkp/delete/<file_md5>', methods=['POST'])
 @basic_auth.required
