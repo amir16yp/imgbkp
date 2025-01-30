@@ -17,6 +17,7 @@ parser.add_argument('--username', default='admin', help='Username for basic auth
 parser.add_argument('--password', default='admin', help='Password for basic authentication')
 parser.add_argument('--host', default='0.0.0.0', help='Host IP address')
 parser.add_argument('--port', type=int, default=8833, help='Port for the Flask application')
+parser.add_argument('--debug', type=bool, default=False, help='Run in debug mode')
 args = parser.parse_args()
 
 # Basic HTTP Authentication Configuration
@@ -125,7 +126,38 @@ def admin():
                     metadata = json.load(metadata_file)
                     uploaded_files.append(metadata)
 
-    return render_template('admin.html', files=uploaded_files, css_file=url_for('static', filename='style.css'))
+    return render_template('admin.html', files=uploaded_files)
+
+@app.route('/bkp/delete/<file_md5>', methods=['POST'])
+@basic_auth.required
+def delete_file(file_md5):
+    try:
+        # Path to metadata file
+        metadata_file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_md5 + '.json')
+        
+        # Check if metadata exists
+        if not os.path.exists(metadata_file_path):
+            return jsonify({'error': 'File not found'}), 404
+            
+        # Read metadata to get file information
+        with open(metadata_file_path, 'r') as metadata_file:
+            metadata = json.load(metadata_file)
+            
+        # Construct file path based on metadata
+        file_extension = metadata.get('file_extension', '')
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_md5 + file_extension)
+        
+        # Delete the actual file if it exists
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            
+        # Delete the metadata file
+        os.remove(metadata_file_path)
+        
+        return jsonify({'message': 'File deleted successfully'}), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/bkp/<file_md5>')
 def get_file(file_md5):
@@ -156,4 +188,7 @@ def get_file(file_md5):
         return "File not found."
 
 if __name__ == '__main__':
-    serve(app, host=args.host, port=args.port)
+    if args.debug == True:
+        app.run(host=args.host, port=args.port, debug=True)
+    else:
+        serve(app, host=args.host, port=args.port)
